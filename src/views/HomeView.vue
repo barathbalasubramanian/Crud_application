@@ -40,7 +40,7 @@ export default {
       border: none;
       outline: none;
       color: blue;
-      transform: scale(1);
+      transform: scale(2);
       border-radius: 5px;
     }
     @media only screen  and (max-width:400px) {
