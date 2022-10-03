@@ -162,7 +162,7 @@ export default {
             text-align: center;
            }
            .container {
-            margin-top: 15%;
+            margin-top: 13%;
             flex:0 0 75%
            }
     }

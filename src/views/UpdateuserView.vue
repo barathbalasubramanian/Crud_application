@@ -121,13 +121,11 @@ export default {
     }
     .container {
         width: 700px;
-        position: absolute;
-        top: 9%;
-        left: 25%;
+        margin: 3em 7em auto 7em;
         padding: 30px 30px;
         height: auto;
         display: flex;
-        flex: 0 0 75%;
+        flex: 0 0 50%;
         flex-direction: column;
         row-gap: 20px;
     }
@@ -187,5 +185,10 @@ export default {
         color: red;
         border: none;
         outline: none;
+    }
+    @media only screen and (max-width:500px) {
+        .container  {
+            flex: 0 0 80%;
+        }
     }
 </style>

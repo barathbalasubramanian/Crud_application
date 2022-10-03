@@ -103,7 +103,6 @@ a{
 }
 
 .allusers {
-  direction:ltr;
   display: flex;
   flex-direction: column;
   row-gap: 15px;
@@ -111,7 +110,7 @@ a{
   align-items:center;
   margin-top: 3em;
   flex: 0 0 50%;
-  overflow: auto;
+  overflow: auto; 
   overflow: scroll !important;
 }
 

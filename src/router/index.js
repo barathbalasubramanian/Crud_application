@@ -3,6 +3,9 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import NewuserView from '../views/NewuserView.vue'
 import UpdateuserView from '../views/UpdateuserView.vue'
+import UploadView from '../views/UploadView.vue'
+import AllfilesView from '../views/AllfilesView.vue'
+
 const routes = [
   {
     path: '/',
@@ -28,6 +31,16 @@ const routes = [
     path: '/newuser/:user_id',
     name:'Updateuser',
     component: UpdateuserView
+  },
+  {
+    path: '/upload',
+    name:'Uploadfile',
+    component: UploadView
+  },
+  {
+    path: '/allfiles',
+    name:'Allfile',
+    component: AllfilesView
   }
 ]
 
