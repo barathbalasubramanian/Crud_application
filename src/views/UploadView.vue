@@ -97,7 +97,6 @@ export default {
         align-items: start;
         flex-direction: column;
         row-gap: 20px;
-        /* border: 2px solid red; */
     }
     .percentactive {
         background-color: rgb(66, 179, 66);

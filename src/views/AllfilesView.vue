@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <div class="tab">
       <div class="nofiles" v-if="this.last_name .length < 1"> </div>
-      <div >
+      <div class="w_tab" >
         <table class="table" v-if="this.last_name.length > 0">
           <thead>
             <tr>
@@ -35,8 +35,8 @@
       <div v-if="this.last_name.length > 0" class="up_next">
         <div class="upload" v-if="this.firstdiv == true"><router-link to="/upload">Upload</router-link> </div>
         <div v-if="this.firstdiv == false"><button @click="previouspage()"><span class="material-symbols-outlined">keyboard_double_arrow_left</span></button></div>
-        <div class="page"><span >Page</span>{{this.currentpage}}</div>
-        <div><button @click="nextpage()"><span class="material-symbols-outlined">double_arrow</span></button></div>
+        <div class="pages"></div>
+        <div v-if="this.currentpage < 10"><button @click="nextpage()"><span class="material-symbols-outlined">double_arrow</span></button></div>
       </div>
     </div>
 </template>
@@ -56,10 +56,14 @@ export default {
       thirddiv : false,
       nextpageno : 0,
       previouspageno : 0,
-      currentpage : 1
+      currentpage : 1,
+      list : []
       }
     },
-    mounted : function() { this.pageTokenExample()   } ,
+    mounted : function() { 
+      this.pageTokenExample()
+    } ,
+  
     methods : {
         async pageTokenExample(){
             const storage = getStorage();
@@ -77,6 +81,8 @@ export default {
                     .then((url) => {
                       this.last_name.push(img[0])
                       this.last_url.push(url)
+                      if (this.last_name.length == 5) {
+                      this.pagemaker() }
                     })
               });
 
@@ -85,11 +91,12 @@ export default {
               });
     },
     
-    // retriving currentpage data
+    // retrieving currentpage data
     nextpage() {
+      document.getElementById(this.currentpage.toString()).classList.remove('pageactive')
       this.currentpage += 1
-      document.querySelector('.page').innerHTML = 'Page' + this.currentpage
-
+      this.list.push(this.currentpage)
+      this.pagecheck()
       if ( this.currentpage == 2){
       this.firstdiv = false
       this.seconddiv = true 
@@ -99,25 +106,45 @@ export default {
         this.seconddiv = false
       }
     },
-    // retriving currentpage data
+    // retrieving currentpage data
     previouspage() {
       this.currentpage -= 1
-      document.querySelector('.page').innerHTML = 'Page' + this.currentpage
-
+      this.list.push(this.currentpage)
+      this.pagecheck()
       if (this.currentpage == 1) {
           this.firstdiv = true
           this.seconddiv = false }
       if (this.currentpage == 2) {
           this.seconddiv = true
           this.thirddiv = false }
+    },
+
+    pagemaker() {
+      for ( let i = 1 ; i<11 ; i++) {
+        let s_page = document.createElement ('div')
+        s_page.innerHTML = i
+        s_page.id = i
+        s_page.classList.add('page')
+        document.querySelector('.pages').appendChild(s_page)
+      }
+      document.getElementById(this.currentpage.toString()).classList.add('pageactive')
+    },
+    pagecheck() {
+      for (let i=0; i<this.list.length; i++)  {
+        
+        if (i != this.list.length-1) {
+          let remove = this.list[i]
+          document.getElementById(remove.toString()).classList.remove('pageactive') }
+        else {
+          let add = this.list[i]
+          document.getElementById(add.toString()).classList.add('pageactive') } }
     }
     },
 }
 
-
 </script>
 
-<style scoped>
+<style >
 
   .tab {
     display: flex;
@@ -135,10 +162,13 @@ export default {
     padding: .3em;
     border: 1px solid green;
   }
+  thead tr {
+    background-color: green;
+  }
   .table td ,.table th {
   padding: 1em;
   text-align: center;
-  border-top:1px solid #200202 ;
+  border:1px solid #202020 ;
   }
   .table td a{
     padding: .3em .1em;
@@ -161,6 +191,30 @@ export default {
   .btn {
     margin-bottom: 2px;
   }
+  .link {
+    overflow: hidden;
+  }
+  img {
+    width: 100px;
+    height: 100px;
+  }
+  .pages {
+    display: flex;
+    gap: 5px;
+  }
+  .page{
+      border: 1px solid;
+      padding: .2em .5em;
+      display: flex;
+      text-align: center;
+      justify-content: center;
+      cursor: pointer;
+  }
+  .pageactive {
+    background-color: green;
+    font-size: 20px;
+    color:white
+  }
   @media only screen and (max-width: 1000px) {
     .tab {
       margin: 5em 5em 0 5em;
@@ -173,12 +227,5 @@ export default {
     }
     
   }
-  .link {
-    overflow: hidden;
-  }
-  img {
-    width: 100px;
-    height: 100px;
-  }
-
 </style>
+
