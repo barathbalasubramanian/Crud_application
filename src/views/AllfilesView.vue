@@ -1,5 +1,7 @@
 
+
 <template>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <div class="tab">
       <div class="nofiles" v-if="this.last_name .length < 1"> </div>
       <div >
@@ -11,16 +13,31 @@
               <th>GO TO</th>
             </tr>
           </thead>
-          <tbody>
-            <tr v-for="(name,index) in this.last_name" :key="index"> 
+          <tbody v-for="(name,index) in this.last_name" :key="index" >
+            <tr v-if="index < 5 && this.firstdiv == true"> 
               <td>{{index+1}}</td>
               <td>{{name}}</td>
-              <td class="link"><a :href="`${this.last_url[index]}`">{{this.last_url[index]}}</a></td>
+              <td class="link"><a :href="`${this.last_url[index]}`"><img :src="`${this.last_url[index]}`" alt="NOT VISIBLE"></a></td>
+            </tr>
+            <tr v-if="index > 4 && index < 10 && this.seconddiv == true"> 
+              <td>{{index+1}}</td>
+              <td>{{name}}</td>
+              <td class="link"><a :href="`${this.last_url[index]}`"><img :src="`${this.last_url[index]}`" alt="NOT VISIBLE"></a></td>
+            </tr>
+            <tr v-if="index > 9 && index < this.last_name.length && this.thirddiv == true"> 
+              <td>{{index+1}}</td>
+              <td>{{name}}</td>
+              <td class="link"><a :href="`${this.last_url[index]}`"><img :src="`${this.last_url[index]}`" alt="NOT VISIBLE"></a></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="upload" v-if="this.last_name.length > 0"><router-link to="/upload">Upload</router-link> </div>
+      <div v-if="this.last_name.length > 0" class="up_next">
+        <div class="upload" v-if="this.firstdiv == true"><router-link to="/upload">Upload</router-link> </div>
+        <div v-if="this.firstdiv == false"><button @click="previouspage()"><span class="material-symbols-outlined">keyboard_double_arrow_left</span></button></div>
+        <div class="page"><span >Page</span>{{this.currentpage}}</div>
+        <div><button @click="nextpage()"><span class="material-symbols-outlined">double_arrow</span></button></div>
+      </div>
     </div>
 </template>
 
@@ -32,43 +49,71 @@ export default {
     data() {
       return {
       path: [],
-      fileName: [],
-      urls: [],
       last_name:[],
-      last_url:[]
+      last_url:[],
+      firstdiv : true,
+      seconddiv : false,
+      thirddiv : false,
+      nextpageno : 0,
+      previouspageno : 0,
+      currentpage : 1
       }
     },
-    mounted : function() { this.pageTokenExample() } ,
+    mounted : function() { this.pageTokenExample()   } ,
     methods : {
         async pageTokenExample(){
             const storage = getStorage();
             const listhef = ref(storage, 'public/');
 
-  // list all the files 
+            // list all the files 
+            listAll(listhef)
+            .then((res) => {
+              res.items.forEach((itemRef) => {
+                this.path.unshift(Object.values(itemRef['_location'])[1])
+                let img = Object.values(this.path)
+                const starsRef = ref(storage,img[0] )
+                    // getting url
+                    getDownloadURL(starsRef)
+                    .then((url) => {
+                      this.last_name.push(img[0])
+                      this.last_url.push(url)
+                    })
+              });
 
-  listAll(listhef)
-  .then((res) => {
+              }).catch((err) => {
+                alert('ERROR', err)
+              });
+    },
     
-    res.items.forEach((itemRef) => {
+    // retriving currentpage data
+    nextpage() {
+      this.currentpage += 1
+      document.querySelector('.page').innerHTML = 'Page' + this.currentpage
 
-      this.path.unshift(Object.values(itemRef['_location'])[1])
-      let img = Object.values(this.path)
-      const starsRef = ref(storage,img[0] )
+      if ( this.currentpage == 2){
+      this.firstdiv = false
+      this.seconddiv = true 
+      }
+      if (this.currentpage == 3) {
+        this.thirddiv = true
+        this.seconddiv = false
+      }
+    },
+    // retriving currentpage data
+    previouspage() {
+      this.currentpage -= 1
+      document.querySelector('.page').innerHTML = 'Page' + this.currentpage
 
-          getDownloadURL(starsRef)
-          .then((url) => {
-            this.last_name.push(img[0])
-            this.last_url.push(url)
-          })
-    });
-
-    }).catch((err) => {
-      alert('ERROR', err)
-    });
-
+      if (this.currentpage == 1) {
+          this.firstdiv = true
+          this.seconddiv = false }
+      if (this.currentpage == 2) {
+          this.seconddiv = true
+          this.thirddiv = false }
+    }
+    },
 }
-}
-}
+
 
 </script>
 
@@ -78,7 +123,7 @@ export default {
     display: flex;
     flex-direction: column;
     flex: 0 0 50%;
-    margin: 5em 8em;
+    margin: 0 40% 0 10%;
   }
   .names,.urls {
     display: flex;
@@ -100,20 +145,21 @@ export default {
     font-size: 1.1em;
     margin: 0.2em;
   }
-  .upload {
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    margin: 2em 0em 0 2em ;
-    text-decoration: none;
-  }
-  .upload a {
+
+  a {
     text-decoration: none;
     color:green
 
   }
-  tbody{
-    border: 2px solid rebeccapurple;
+  .up_next {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2em;
+  }
+  .btn {
+    margin-bottom: 2px;
   }
   @media only screen and (max-width: 1000px) {
     .tab {
@@ -123,13 +169,16 @@ export default {
   }
   @media only screen and (max-width: 400px) {
     .tab {
-      margin: 5em 5em 0 5em;
       flex: 0 0 75%;
     }
     
   }
   .link {
     overflow: hidden;
+  }
+  img {
+    width: 100px;
+    height: 100px;
   }
 
 </style>
