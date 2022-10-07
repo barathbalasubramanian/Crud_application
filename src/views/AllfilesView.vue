@@ -32,10 +32,10 @@
           </tbody>
         </table>
       </div>
+      <div v-if="this.last_name.length > 0"  class="pages"></div>
       <div v-if="this.last_name.length > 0" class="up_next">
         <div class="upload" v-if="this.firstdiv == true"><router-link to="/upload">Upload</router-link> </div>
         <div v-if="this.firstdiv == false"><button @click="previouspage()"><span class="material-symbols-outlined">keyboard_double_arrow_left</span></button></div>
-        <div class="pages"></div>
         <div v-if="this.currentpage < 10"><button @click="nextpage()"><span class="material-symbols-outlined">double_arrow</span></button></div>
       </div>
     </div>
@@ -149,8 +149,9 @@ export default {
   .tab {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     flex: 0 0 50%;
-    margin: 0 40% 0 10%;
   }
   .names,.urls {
     display: flex;
@@ -173,7 +174,6 @@ export default {
   .table td a{
     padding: .3em .1em;
     font-size: 1.1em;
-    margin: 0.2em;
   }
 
   a {
@@ -186,14 +186,12 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-top: 2em;
+    margin: 2em 0 2em 0
   }
   .btn {
     margin-bottom: 2px;
   }
-  .link {
-    overflow: hidden;
-  }
+  
   img {
     width: 100px;
     height: 100px;
@@ -217,7 +215,6 @@ export default {
   }
   @media only screen and (max-width: 1000px) {
     .tab {
-      margin: 5em 5em 0 5em;
       flex: 0 0 50%;
     }
   }
@@ -225,7 +222,23 @@ export default {
     .tab {
       flex: 0 0 75%;
     }
-    
+    img {
+    width: 75px;
+    height: 75px;
+  }
+  .up_next {
+    display: flex;
+    flex-direction: row;
+    gap: 15em;
+    align-items: center;
+    margin-top: 2em;
+  }
+  .pages {
+      margin-top: 2.5em;
+  }
+  .table td, .table th {
+    padding: .7em; 
+    }
   }
 </style>
 
